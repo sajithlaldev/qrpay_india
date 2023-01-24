@@ -20,9 +20,12 @@
   "dependencies": {
     "@hope-ui/solid": "^0.6.7",
     "@stitches/core": "^1.2.8",
+    "@zxing/browser": "^0.1.1",
+    "@zxing/library": "^0.19.1",
     "dexie": "^3.2.2",
-    "html5-qrcode": "^2.2.4",
+    "i": "^0.3.7",
     "nanoid": "^4.0.0",
+    "npm": "^8.19.3",
     "solid-dexie": "^0.0.5",
     "solid-js": "^1.4.8",
     "solid-transition-group": "^0.0.10",

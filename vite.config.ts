@@ -3,7 +3,7 @@ import solidPlugin from 'vite-plugin-solid';
 import {VitePWA} from 'vite-plugin-pwa';
 
 const pwaConfig = VitePWA({
-  registerType: 'autoUpdate',
+  registerType: 'prompt',
   strategies: 'injectManifest',
   srcDir: 'src',
   filename: 'main-sw.ts',

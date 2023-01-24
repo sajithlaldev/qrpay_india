@@ -1,5 +1,4 @@
-import { Html5Qrcode } from "html5-qrcode";
-import { Html5QrcodeResult } from "html5-qrcode/esm/core";
+import { BrowserQRCodeReader } from "@zxing/browser";
 import { Component, onMount } from "solid-js";
 import "../index.css";
 
@@ -7,7 +6,9 @@ const QRReader: Component = () => {
   let copyField: HTMLInputElement;
 
   let copyBtn: HTMLButtonElement;
-  onMount(() => {
+  var previewElem: HTMLVideoElement;
+
+  onMount(async () => {
     let modal = document.getElementById("my-modal")!;
 
     modal.style.display = "none";
@@ -25,28 +26,47 @@ const QRReader: Component = () => {
       }
     };
     console.log("started");
-    async function onScanSuccess(
-      decodedText: string,
-      decodedResult: Html5QrcodeResult
-    ) {
-      console.log(`Scan result: ${decodedText}`, decodedResult);
-      var vpa = new URL(decodedText).searchParams.get("pa");
-      copyField.value = vpa!;
-      modal.style.display = "block";
-      // await html5QrcodeScanner.clear();
-    }
-    function onScanError(errorMessage: any) {
-      console.log(`Scan error: ${errorMessage}`);
-    }
 
-    const html5QrCode = new Html5Qrcode("reader");
-    const config = { fps: 30, qrbox: { width: 250, height: 250 } };
-    html5QrCode.start(
-      { facingMode: "environment" },
-      config,
-      onScanSuccess,
-      onScanError
-    );
+    const codeReader = new BrowserQRCodeReader();
+
+    const camera = await navigator?.mediaDevices
+      ?.getUserMedia({ video: true })
+      .catch(() => console.log());
+
+    if (camera) {
+      const videoInputDevices =
+        await BrowserQRCodeReader.listVideoInputDevices();
+
+      if (videoInputDevices.length == 0) {
+        alert("No cameras detected!");
+      } else {
+        // choose your media device (webcam, frontal camera, back camera, etc.)
+        const selectedDeviceId =
+          videoInputDevices.length > 1
+            ? videoInputDevices[1].deviceId
+            : videoInputDevices[0].deviceId;
+
+        console.log(`Started decode from camera with id ${selectedDeviceId}`);
+
+        // you can use the controls to stop() the scan or switchTorch() if available
+        await codeReader.decodeFromVideoDevice(
+          selectedDeviceId,
+          previewElem!,
+          (result, error, controls) => {
+            console.log(error, controls);
+            try {
+              console.log(
+                `Scan result: ${result!.getText()}`,
+                result!.getText()
+              );
+              var vpa = new URL(result!.getText()).searchParams.get("pa");
+              copyField.value = vpa!;
+              modal.style.display = "block";
+            } catch (e: any) {}
+          }
+        );
+      }
+    }
   });
 
   function copyToClipboard(el: HTMLInputElement) {
@@ -85,7 +105,19 @@ const QRReader: Component = () => {
 
   return (
     <div>
-      <div class="w-full" id="reader"></div>
+      <div class="relative h-full">
+        <video class="absolute w-full" ref={previewElem!}></video>
+        <div class="absolute w-full h-screen">
+          <iframe
+            style="border: none"
+            width="250"
+            height="250"
+            class="mx-auto my-32"
+            src="https://rive.app/s/mJR1WSYx1EC4jisz7tJE1A/embed"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
       <div
         class="fixed hidden inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full"
         id="my-modal"

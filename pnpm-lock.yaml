@@ -3,10 +3,13 @@ lockfileVersion: 5.4
 specifiers:
   '@hope-ui/solid': ^0.6.7
   '@stitches/core': ^1.2.8
+  '@zxing/browser': ^0.1.1
+  '@zxing/library': ^0.19.1
   autoprefixer: ^10.4.13
   dexie: ^3.2.2
-  html5-qrcode: ^2.2.4
+  i: ^0.3.7
   nanoid: ^4.0.0
+  npm: ^8.19.3
   postcss: ^8.4.18
   solid-dexie: ^0.0.5
   solid-js: ^1.4.8
@@ -22,9 +25,12 @@ specifiers:
 dependencies:
   '@hope-ui/solid': 0.6.7_sszzskbueur5rfztas6oehtsky
   '@stitches/core': 1.2.8
+  '@zxing/browser': 0.1.1_@zxing+library@0.19.1
+  '@zxing/library': 0.19.1
   dexie: 3.2.2
-  html5-qrcode: 2.2.4
+  i: 0.3.7
   nanoid: 4.0.0
+  npm: 8.19.3
   solid-dexie: 0.0.5_dexie@3.2.2+solid-js@1.4.8
   solid-js: 1.4.8
   solid-transition-group: 0.0.10_solid-js@1.4.8
@@ -1442,6 +1448,31 @@ packages:
   /@types/trusted-types/2.0.2:
     resolution: {integrity: sha512-F5DIZ36YVLE+PN+Zwws4kJogq47hNgX3Nx6WyDJ3kcplxyke3XIzB8uK5n/Lpm1HBsbGzd6nmGehL8cPekP+Tg==}
 
+  /@zxing/browser/0.1.1_@zxing+library@0.19.1:
+    resolution: {integrity: sha512-fdcHrvvno1NnoiY5++kn/h2b9QnBNyqtK1JqbfY3dfmTdwyXCJr/aT2ZGyRcfe0D3I/THu1I5VJAcpoU0svQMQ==}
+    peerDependencies:
+      '@zxing/library': ^0.19.1
+    dependencies:
+      '@zxing/library': 0.19.1
+    optionalDependencies:
+      '@zxing/text-encoding': 0.9.0
+    dev: false
+
+  /@zxing/library/0.19.1:
+    resolution: {integrity: sha512-rKwvl3Uuqs8yf364iU9l3HDDaIx8yPv+CH6DbtQaQr67VdKLG22G1ukEp9fOdDefE6tpLtRAdMnTrgtpiaKAZw==}
+    engines: {node: '>= 10.4.0'}
+    dependencies:
+      ts-custom-error: 3.3.1
+    optionalDependencies:
+      '@zxing/text-encoding': 0.9.0
+    dev: false
+
+  /@zxing/text-encoding/0.9.0:
+    resolution: {integrity: sha512-U/4aVJ2mxI0aDNI8Uq0wEhMgY+u4CNtEb0om3+y3+niDAsoTCOB33UF0sxpzqzdqXLqmvc+vZyAt4O8pPdfkwA==}
+    requiresBuild: true
+    dev: false
+    optional: true
+
   /acorn-node/1.8.2:
     resolution: {integrity: sha512-8mt+fslDufLYntIoPAaIMUe/lrbrehIiwmR3t2k9LljIzoigEPF27eLk2hy8zSGzmR/ogr7zbRKINMo1u0yh5A==}
     dependencies:
@@ -2299,8 +2330,9 @@ packages:
     resolution: {integrity: sha512-c3Ab/url5ksaT0WyleslpBEthOzWhrjQbg75y7XUsfSzi3Dgzt0l8w5e7DylRn15MTlMMD58dTfzddNS2kcAjQ==}
     dev: true
 
-  /html5-qrcode/2.2.4:
-    resolution: {integrity: sha512-X8wVVsHpNb35tl7KcoCGAboc6Nep2VyT3CIMjFvrfWrHbHTC0yYTjE+DhO/VcswY2MfHy1uB7b1G9+L13gM6dQ==}
+  /i/0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
     dev: false
 
   /idb/7.0.2:
@@ -2618,6 +2650,86 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /npm/8.19.3:
+    resolution: {integrity: sha512-0QjmyPtDxSyMWWD8I91QGbrgx9KzbV6C9FK1liEb/K0zppiZkr5KxXc990G+LzPwBHDfRjUBlO9T1qZ08vl9mA==}
+    engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
+    hasBin: true
+    dev: false
+    bundledDependencies:
+      - '@isaacs/string-locale-compare'
+      - '@npmcli/arborist'
+      - '@npmcli/ci-detect'
+      - '@npmcli/config'
+      - '@npmcli/fs'
+      - '@npmcli/map-workspaces'
+      - '@npmcli/package-json'
+      - '@npmcli/run-script'
+      - abbrev
+      - archy
+      - cacache
+      - chalk
+      - chownr
+      - cli-columns
+      - cli-table3
+      - columnify
+      - fastest-levenshtein
+      - fs-minipass
+      - glob
+      - graceful-fs
+      - hosted-git-info
+      - ini
+      - init-package-json
+      - is-cidr
+      - json-parse-even-better-errors
+      - libnpmaccess
+      - libnpmdiff
+      - libnpmexec
+      - libnpmfund
+      - libnpmhook
+      - libnpmorg
+      - libnpmpack
+      - libnpmpublish
+      - libnpmsearch
+      - libnpmteam
+      - libnpmversion
+      - make-fetch-happen
+      - minimatch
+      - minipass
+      - minipass-pipeline
+      - mkdirp
+      - mkdirp-infer-owner
+      - ms
+      - node-gyp
+      - nopt
+      - npm-audit-report
+      - npm-install-checks
+      - npm-package-arg
+      - npm-pick-manifest
+      - npm-profile
+      - npm-registry-fetch
+      - npm-user-validate
+      - npmlog
+      - opener
+      - p-map
+      - pacote
+      - parse-conflict-json
+      - proc-log
+      - qrcode-terminal
+      - read
+      - read-package-json
+      - read-package-json-fast
+      - readdir-scoped-modules
+      - rimraf
+      - semver
+      - ssri
+      - tar
+      - text-table
+      - tiny-relative-date
+      - treeverse
+      - validate-npm-package-name
+      - which
+      - write-file-atomic
 
   /object-hash/3.0.0:
     resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
@@ -3118,6 +3230,11 @@ packages:
     dependencies:
       punycode: 2.1.1
     dev: true
+
+  /ts-custom-error/3.3.1:
+    resolution: {integrity: sha512-5OX1tzOjxWEgsr/YEUWSuPrQ00deKLh6D7OTWcvNHm12/7QPyRh8SYpyWvA4IZv8H/+GQWQEh/kwo95Q9OVW1A==}
+    engines: {node: '>=14.0.0'}
+    dev: false
 
   /ts-toolbelt/9.6.0:
     resolution: {integrity: sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==}

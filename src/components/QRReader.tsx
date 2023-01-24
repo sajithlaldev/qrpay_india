@@ -1,4 +1,4 @@
-import { BrowserQRCodeReader } from "@zxing/browser";
+import jsQR from "jsqr";
 import { Component, onMount } from "solid-js";
 import "../index.css";
 
@@ -6,7 +6,9 @@ const QRReader: Component = () => {
   let copyField: HTMLInputElement;
 
   let copyBtn: HTMLButtonElement;
-  var previewElem: HTMLVideoElement;
+  var camera: HTMLVideoElement;
+  var canvas: HTMLCanvasElement;
+
 
   onMount(async () => {
     let modal = document.getElementById("my-modal")!;
@@ -27,86 +29,101 @@ const QRReader: Component = () => {
     };
     console.log("started");
 
-    const codeReader = new BrowserQRCodeReader();
+    var mediaConfig = {
 
-    const camera = await navigator?.mediaDevices
-      ?.getUserMedia({ video: true })
-      .catch(() => console.log());
 
-    if (camera) {
-      const videoInputDevices =
-        await BrowserQRCodeReader.listVideoInputDevices();
+      video: {
+        width: { min: 720, max: 1280 }, height: { min: 720, max: 1280 }
 
-      if (videoInputDevices.length == 0) {
-        alert("No cameras detected!");
-      } else {
-        // choose your media device (webcam, frontal camera, back camera, etc.)
-        const selectedDeviceId =
-          videoInputDevices.length > 1
-            ? videoInputDevices[1].deviceId
-            : videoInputDevices[0].deviceId;
+      }
+    };
 
-        console.log(`Started decode from camera with id ${selectedDeviceId}`);
 
-        // you can use the controls to stop() the scan or switchTorch() if available
-        await codeReader.decodeFromVideoDevice(
-          selectedDeviceId,
-          previewElem!,
-          (result, error, controls) => {
-            console.log(error, controls);
-            try {
-              console.log(
-                `Scan result: ${result!.getText()}`,
-                result!.getText()
-              );
-              var vpa = new URL(result!.getText()).searchParams.get("pa");
+    // Request access to the user's camera
+    navigator.mediaDevices.getUserMedia(mediaConfig)
+      .then((stream) => {
+        camera.srcObject = stream;
+
+        camera.play();
+        // Wait for the video to load the first frame
+        camera.onloadedmetadata = () => {
+
+          // Scan for QR codes every 100 milliseconds
+        setInterval(() => {
+          // Draw the video frame to the canvas
+         
+          canvas.height = camera.videoHeight;
+          canvas.width = camera.videoWidth;
+          let ctx = canvas.getContext('2d')!;
+          ctx.drawImage(camera, 0, 0, canvas.width, canvas.height);
+
+          var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+          var data = imgData.data;
+
+          // Decode QR code from canvas
+          const code =jsQR(data,canvas.width,canvas.height);
+          if (code) {
+            console.log(code.data);
+            var result = code.data.toString();
+            var vpa = new URL(result!).searchParams.get("pa");
               copyField.value = vpa!;
               modal.style.display = "block";
-            } catch (e: any) {}
+            
+            //  do something here with the QR code data
           }
-        );
+        }, 100);
+
+
+        };
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+
+
+    function copyToClipboard(el: HTMLInputElement) {
+      // resolve the element
+
+      // handle iOS as a special case
+      if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+        // save current contentEditable/readOnly status
+        var editable = el.contentEditable;
+        var readOnly = el.readOnly;
+
+        // convert to editable with readonly to stop iOS keyboard opening
+        el.contentEditable = "true";
+        el.readOnly = true;
+
+        // create a selectable range
+        var range = document.createRange();
+        range.selectNodeContents(el);
+
+        // select the range
+        var selection = window.getSelection()!;
+        selection.removeAllRanges();
+        selection.addRange(range);
+        el.setSelectionRange(0, 999999);
+
+        // restore contentEditable/readOnly to original state
+        el.contentEditable = editable;
+        el.readOnly = readOnly;
+      } else {
+        el.select();
       }
+
+      // execute copy command
+      document.execCommand("copy");
     }
-  });
-
-  function copyToClipboard(el: HTMLInputElement) {
-    // resolve the element
-
-    // handle iOS as a special case
-    if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
-      // save current contentEditable/readOnly status
-      var editable = el.contentEditable;
-      var readOnly = el.readOnly;
-
-      // convert to editable with readonly to stop iOS keyboard opening
-      el.contentEditable = "true";
-      el.readOnly = true;
-
-      // create a selectable range
-      var range = document.createRange();
-      range.selectNodeContents(el);
-
-      // select the range
-      var selection = window.getSelection()!;
-      selection.removeAllRanges();
-      selection.addRange(range);
-      el.setSelectionRange(0, 999999);
-
-      // restore contentEditable/readOnly to original state
-      el.contentEditable = editable;
-      el.readOnly = readOnly;
-    } else {
-      el.select();
-    }
-
-    // execute copy command
-    document.execCommand("copy");
-  }
+  })
 
   return (
     <div>
       <div class="relative h-full">
-        <video class="absolute w-full" ref={previewElem!}></video>
+        <video class="absolute w-full" ref={camera!}></video>
+        <canvas ref={canvas!} style="display: none;"></canvas>
+
         <div class="absolute w-full h-screen">
           <iframe
             style="border: none"
